@@ -6,6 +6,8 @@ import productsRouter from "./src/router/products.router.js"
 import cartsRouter from "./src/router/carts.router.js"
 import viewsRouter from "./src/router/views.router.js"
 
+import {ProductManager} from "./ProductManager.js"
+
 const app = express()
 const PORT = 8080
 
@@ -29,8 +31,25 @@ const server = app.listen(PORT, ()=>{
 
 const io = new Server(server)
 
-io.on("connection", (socket)=>{
+const actualizarVista = async () =>{
+    io.emit("listProducts", await ProductManager.leerArchivo())
+}
+
+io.on("connection", async(socket)=>{
     console.log("Nuevo cliente conectado")
 
-    socket.on("")
+    actualizarVista()
+
+    socket.on("deleteProduct", async (id)=>{
+        await ProductManager.eliminarProducto(parseInt(id))
+        await actualizarVista()
+    })
+
+    socket.on("addProduct",async (newProduct)=>{
+        await ProductManager.agregarProducto(newProduct)
+        await actualizarVista()
+    })
+
+
+
 })

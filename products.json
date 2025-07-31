@@ -85,26 +85,7 @@
     "description": "Unidad de estado sólido NVMe PCIe Gen3 x4, velocidad de lectura hasta 3500 MB/s",
     "code": "SSD-007",
     "price": 119.99,
-    "status": true,
-    "stock": 18,
-    "category": "Hardware",
-    "thumbnails": [
-      "/images/ssd/ssd1-front.jpg",
-      "/images/ssd/ssd1-package.jpg"
-    ]
-  },
-  {
-    "id": 8,
-    "title": "Mouse Gamer Inalámbrico",
-    "description": "Mouse con sensor óptico de alta precisión y 7 botones programables",
-    "code": "MOU-003",
-    "price": 49.99,
-    "status": true,
-    "stock": 30,
-    "category": "Periféricos",
-    "thumbnails": [
-      "/images/mouse/mouse1-front.jpg",
-      "/images/mouse/mouse1-back.jpg"
-    ]
+    "stock": 19,
+    "category": "Hardware"
   }
 ]
