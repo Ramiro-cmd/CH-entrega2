@@ -8,7 +8,7 @@ const router = Router()
 router.get("/", async (req,res)=>{
     productos = await ProductManager.leerArchivo()
 
-    res.status(200).json(productos)
+    res.render("home",{productos})
 })
 
 router.get("/:id",async (req,res)=>{

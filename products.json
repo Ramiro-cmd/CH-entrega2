@@ -92,5 +92,19 @@
       "/images/ssd/ssd1-front.jpg",
       "/images/ssd/ssd1-package.jpg"
     ]
+  },
+  {
+    "id": 8,
+    "title": "Mouse Gamer Inalámbrico",
+    "description": "Mouse con sensor óptico de alta precisión y 7 botones programables",
+    "code": "MOU-003",
+    "price": 49.99,
+    "status": true,
+    "stock": 30,
+    "category": "Periféricos",
+    "thumbnails": [
+      "/images/mouse/mouse1-front.jpg",
+      "/images/mouse/mouse1-back.jpg"
+    ]
   }
 ]
