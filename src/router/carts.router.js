@@ -45,16 +45,36 @@ router.put("/:cid/product/:pid", async (req, res) => {
         }
 
     }catch(error){
-        console.log(error)
         res.status(500).send("Error al agregar producto al carrito",error)
   }
+})
+
+
+router.put("/:cid",async (req,res)=>{
+    try{
+        const cartId = req.params.cid
+        const newProducts = req.body
+        let cart = await cartModel.findById(cartId)
+        if(!cart){
+            return res.status(404).send("Error carrito no encontrado")
+        }
+        if(!Array.isArray(newProducts)){
+            return res.status(400).send("Error productos no validos")
+        }else{
+            cart.products = newProducts
+            await cart.save()
+            res.status(200).send("Carrito actualizado con éxito" )
+        }
+
+    }catch(error){
+        res.status(500).json({message:"Error al actualizar el carrito", error})
+    }
 })
 
 
 router.get("/", async (req,res)=>{
     try{
         carritos = await cartModel.find().lean().populate("products.product")
-        // res.status(200).render("carts",{carritos})
         res.status(200).json(carritos)
 
     }catch(error){
@@ -69,7 +89,8 @@ router.get("/:id", async (req,res)=>{
         if(!cart){
             return res.status(404).send("Error carrito no encontrado")
         }else{
-            res.status(200).json(cart)
+            res.status(200).render("cart", {cart})
+
         }
 
 

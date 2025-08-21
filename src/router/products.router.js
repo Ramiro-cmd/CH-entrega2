@@ -29,7 +29,7 @@ router.get("/", async (req,res)=>{
         })
         // res.json(productos)
     }catch(error){
-        res.status(500).json({ message: 'Error render de los productos', error });
+        res.status(500).json({ message: 'Error render de los productos', error })
     }
 })
 
@@ -61,7 +61,7 @@ router.get("/:id",async (req,res)=>{
         }
 
     }catch(error){
-        res.status(500).json({ message: 'Error render del producto ', error });
+        res.status(500).json({ message: 'Error render del producto ', error })
 
     }
 })
