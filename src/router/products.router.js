@@ -8,12 +8,47 @@ const router = Router()
 
 router.get("/", async (req,res)=>{
     try{
-        productos = await productModel.find().lean()
-        res.status(200).render("home",{productos})
+        const page = parseInt(req.query.page) || 1
+        const limit = parseInt(req.query.limit) || 10
+
+
+        productos = await productModel.find().lean().skip((page - 1) * limit).limit(limit)
+        
+        const totalProducts = await productModel.countDocuments()
+        
+        const totalPages = Math.ceil(totalProducts / limit)
+
+        res.status(200).render("home",{productos,
+            limit, 
+            currentPage: page,
+            totalPages,
+            hasNextPage: page < totalPages,
+            hasPrevPage: page > 1,
+            nextPage: page < totalPages ? page + 1 : null,
+            prevPage: page > 1 ? page - 1 : null
+        })
+        // res.json(productos)
     }catch(error){
         res.status(500).json({ message: 'Error render de los productos', error });
     }
 })
+
+router.get("/json/:id",async (req,res)=>{
+    try{
+        const id = req.params.id
+        let product = await productModel.findById(id).lean()
+        if(!product){
+            res.status(404).send("Error producto no encontrado")
+        }else{
+            res.status(200).json(product)
+        }
+
+    }catch(error){
+        res.status(500).json({ message: 'Error render del producto ', error });
+
+    }
+})
+
 
 router.get("/:id",async (req,res)=>{
     try{

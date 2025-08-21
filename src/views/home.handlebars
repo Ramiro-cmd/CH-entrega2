@@ -23,11 +23,123 @@
                     <td>{{this.price}}</td>
                     <td>{{this.stock}}</td>
                     <td>{{this.category}}</td>
-                    
+                    <td>
+                        <a href="http://localhost:8080/api/products/{{this._id}}">Ver Producto</a>
+                    </td>
+                    <td>
+                        <button data-id="{{this._id}}" class="agregar" >Agregar al carrito</button>
+                    </td>
                 </tr>
             {{/each}}
         </tbody>
     </table>
+
+    <p>Página {{currentPage}} de {{totalPages}}</p>
+
+     <div>
+        {{#if hasPrevPage}}
+            <a href="/api/products?page={{#if prevPage}}{{prevPage}}{{else}}1{{/if}}&limit={{#if limit}}{{limit}}{{else}}10{{/if}}">Previous</a>
+        {{/if}}
+
+        {{#if hasNextPage}}
+            <a href="/api/products?page={{#if nextPage}}{{nextPage}}{{else}}2{{/if}}&limit={{#if limit}}{{limit}}{{else}}10{{/if}}">Next</a>
+        {{/if}}
+    </div>
+
+    <div id="carrito">
+
+    </div>
 {{else}}
     <h2>No hay productos en la lista</h2>
 {{/if}}
+
+<style>
+    table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1.5rem;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  background-color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+thead {
+  background: #4a90e2;
+  color: #fff;
+  text-align: left;
+}
+
+thead th {
+  padding: 12px 15px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+tbody tr {
+  border-bottom: 1px solid #ddd;
+}
+
+tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+tbody tr:hover {
+  background-color: #eef6ff;
+  transition: background-color 0.3s ease;
+}
+
+td {
+  padding: 10px 15px;
+  color: #333;
+}
+
+h1 {
+  font-family: Arial, sans-serif;
+  color: #333;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+button,
+a {
+  display: inline-block;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  text-align: center;
+}
+
+/* Botón tipo enlace: Ver Producto */
+a[href*="/api/products/"] {
+  background-color: #4a90e2;
+  color: #fff;
+}
+
+a[href*="/api/products/"]:hover {
+  background-color: #357ab8;
+  transform: scale(1.05);
+}
+
+/* Botón Agregar al carrito */
+button.agregar {
+  background-color: #27ae60;
+  color: #fff;
+}
+
+button.agregar:hover {
+  background-color: #1e8c4d;
+  transform: scale(1.05);
+}
+
+
+</style>
+
+<script src="/js/products.js"></script>

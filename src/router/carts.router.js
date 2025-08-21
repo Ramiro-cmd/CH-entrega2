@@ -53,7 +53,7 @@ router.put("/:cid/product/:pid", async (req, res) => {
 
 router.get("/", async (req,res)=>{
     try{
-        carritos = await cartModel.find().lean()
+        carritos = await cartModel.find().lean().populate("products.product")
         // res.status(200).render("carts",{carritos})
         res.status(200).json(carritos)
 
@@ -65,7 +65,7 @@ router.get("/", async (req,res)=>{
 router.get("/:id", async (req,res)=>{
     try{
         const id = req.params.id
-        let cart = await cartModel.findById(id).lean()
+        let cart = await cartModel.findById(id).lean().populate("products.product")
         if(!cart){
             return res.status(404).send("Error carrito no encontrado")
         }else{
@@ -104,7 +104,7 @@ router.delete("/:cid/product/:pid", async (req,res)=>{
         if(deleteCartProduct.modifiedCount > 0){
             res.send("Producto eliminado")
         }else{
-            res.send("")
+            res.send("Error al eliminar")
         }
 
     }catch(error){
