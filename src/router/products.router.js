@@ -1,78 +1,74 @@
 import { Router } from "express";
 import { ProductManager } from "../../ProductManager.js"
+import productModel from "../models/product.model.js"
 
 let productos = []
 
 const router = Router()
 
 router.get("/", async (req,res)=>{
-    productos = await ProductManager.leerArchivo()
-
-    res.render("home",{productos})
+    try{
+        productos = await productModel.find().lean()
+        res.status(200).render("home",{productos})
+    }catch(error){
+        res.status(500).json({ message: 'Error render de los productos', error });
+    }
 })
 
 router.get("/:id",async (req,res)=>{
-    const id = parseInt(req.params.id)
-    productos = await ProductManager.leerArchivo()
+    try{
+        const id = req.params.id
+        let product = await productModel.findById(id).lean()
+        if(!product){
+            res.status(404).send("Error producto no encontrado")
+        }else{
+            res.status(200).render("product", {product})
+        }
 
-    const product = productos.find(p => p.id === id)
+    }catch(error){
+        res.status(500).json({ message: 'Error render del producto ', error });
 
-    if(!product){
-        res.status(404).send("Error producto no encontrado")
-    }else{
-        res.json(product)
     }
 })
 
 router.post("/", async (req, res) => {
   try {
     const { title, description, code, price, status, stock, category, thumbnails } = req.body
-
-    if (!title || !description || !code || price == null || stock == null || !category) {
-      return res.status(400).send("Falta agregar datos")
-    }
-
-    const nuevoProducto = await ProductManager.agregarProducto({
-      title,
-      description,
-      code,
-      price,
-      status: status ?? true,
-      stock,
-      category,
-      thumbnails: thumbnails ?? []
-    })
-
-    res.status(201).json(nuevoProducto)
-  } catch (error) {
-    res.status(500).send("Error al agregar el producto")
+    const newProduct = new productModel({title, description, code, price, status, stock, category, thumbnails})
+    await newProduct.save()
+    res.status(201).json(newProduct)
+} catch (error) {
+    res.status(500).json({message:"Error al crear el producto ", error})
   }
 })
 
 router.put("/:id", async (req, res)=>{
     
     try{
-        const id = parseInt(req.params.id)
-        const modificar = req.body
-        productos = await ProductManager.leerArchivo()
+        const id = req.params.id
 
-        const product = productos.findIndex(p => p.id === id)
-
+        const { title, description, code, price, status, stock, category, thumbnails } = req.body
+   
+        let product = await productModel.findById(id)
+        
         if(!product){
-            res.status(404).send("Error producto no encontrado")
-        }else{
-            const idOri = productos[product].id
-            productos[product] = {
-                ...productos[product],
-                ...modificar,
-                id: idOri
-            }
-            await fs.writeFile(ProductManager.file, JSON.stringify(productos, null, 2)) 
-            res.json(productos[product])       
+            return res.status(404).send("Error producto no encontrado")   
         }
+        
+        if(title) product.title = title
+        if(description) product.description = description
+        if(code) product.code = code
+        if(price) product.price = price
+        if(status) product.status = status 
+        if(stock) product.stock = stock 
+        if(category) product.category = category
+        if(thumbnails) product.thumbnails = thumbnails
 
-    }catch{
-        console.log("Error al modificar el producto")
+        await product.save()
+        res.status(202).json(product)
+
+    }catch(error){
+        res.status(500).json({message:`Error al modificar el producto `, error})
     }
     
 
@@ -80,18 +76,18 @@ router.put("/:id", async (req, res)=>{
 
 router.delete("/:id", async (req,res)=>{
     
-    const id = parseInt(req.params.id)
     try{
-        const lista = await ProductManager.eliminarProducto(id)
-        if(lista === null){
-            res.status(404).send("Error producto no encontrado")
+        const {id} = req.params
+        const deleteProduct = await productModel.deleteOne({_id : id})
+        
+        if(deleteProduct.deletedCount > 0){
+            res.status(200).json({message:`Producto eliminado`})
         }else{
-            
-            res.send("Producto eliminado")
+            res.status(404).json({message:` Producto no encontrado`})
         }
 
-    }catch{
-        res.status(500).send
+    }catch(error){
+        res.status(500).json({message:`Error al eliminar el producto `, error})
     }
 })
 

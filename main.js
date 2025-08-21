@@ -8,8 +8,22 @@ import viewsRouter from "./src/router/views.router.js"
 
 import {ProductManager} from "./ProductManager.js"
 
+import mongoose from "mongoose"
+
+
+
 const app = express()
 const PORT = 8080
+
+mongoose.connect("mongodb://localhost:27017/myDatabase")
+// mongoose.connect("mongodb+srv://root:root@cluster0.dbiozif.mongodb.net/myDatabase?retryWrites=true&w=majority&appName=Cluster0")
+.then(()=>{
+    console.log("Conectado a mongo")
+})
+.catch((error)=>{
+    console.log("MongoDB error: ", error)
+})
+
 
 
 app.use(express.json())
@@ -49,7 +63,5 @@ io.on("connection", async(socket)=>{
         await ProductManager.agregarProducto(newProduct)
         await actualizarVista()
     })
-
-
 
 })

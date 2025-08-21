@@ -1,0 +1,11 @@
+<h1>Carritos</h1>
+
+{{#if carritos.length}}
+
+{{#each carritos}}
+<h2>Carrito: {{this._id}}</h2>
+
+{{/each}}
+{{else}}
+<h2>No se encontraron carritos</h2>
+{{/if}}
